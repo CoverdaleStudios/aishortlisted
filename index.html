@@ -1,0 +1,257 @@
+<!doctype html><html lang="en-AU"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>AI Shortlisted — Does AI recommend your business?</title>
+<meta name="description" content="We ask AI assistants 30 real buyer questions about your category and city, then show you who gets recommended instead of you — and the exact web pages the AI reads to decide.">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+ --ink:#101317;--ink2:#454e57;--mute:#727c85;--line:#e3e7ea;--bg:#fff;--panel:#f6f8f9;
+ --accent:#0b53f0;--crit:#c8322f;--good:#15764a;
+ --serif:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif;
+ --sans:-apple-system,BlinkMacSystemFont,"Segoe UI",Inter,Helvetica,Arial,sans-serif;
+ --mono:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+}
+html{scroll-behavior:smooth}
+body{font-family:var(--sans);color:var(--ink);background:var(--bg);font-size:17px;line-height:1.65;-webkit-font-smoothing:antialiased}
+.wrap{max-width:760px;margin:0 auto;padding:0 24px}
+header{border-bottom:1px solid var(--line);padding:20px 0}
+header .wrap{display:flex;justify-content:space-between;align-items:center}
+.logo{font-size:14px;letter-spacing:.15em;text-transform:uppercase;font-weight:700}
+.logo i{font-style:normal;color:var(--accent)}
+header a.cta{font-size:14px;font-weight:600;color:var(--accent);text-decoration:none}
+h1{font-family:var(--serif);font-size:clamp(34px,6vw,52px);line-height:1.1;letter-spacing:-.02em;margin:64px 0 22px;font-weight:600}
+h2{font-family:var(--serif);font-size:clamp(25px,4vw,33px);line-height:1.2;letter-spacing:-.015em;margin:0 0 16px;font-weight:600}
+h3{font-size:17px;margin:0 0 6px}
+p{color:var(--ink2);margin:0 0 18px}
+.lede{font-size:20px;color:var(--ink2);margin-bottom:34px}
+.lede strong{color:var(--ink);font-weight:600}
+section{padding:60px 0;border-top:1px solid var(--line)}
+section.hero{padding-top:0;border-top:none}
+.eyebrow{font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--mute);font-weight:700;margin-bottom:14px}
+.btn{display:inline-block;background:var(--accent);color:#fff;text-decoration:none;font-weight:600;font-size:17px;padding:15px 30px;border-radius:9px;transition:background .15s}
+.btn:hover{background:#0842c4}
+.btn.ghost{background:none;color:var(--accent);border:1px solid var(--line);padding:14px 29px}
+.btns{display:flex;gap:12px;flex-wrap:wrap;align-items:center;margin:8px 0 14px}
+.fine{font-size:14px;color:var(--mute)}
+.demo{border:1px solid var(--line);border-radius:12px;overflow:hidden;margin:34px 0 10px;background:var(--bg)}
+.demo .hd{background:var(--panel);border-bottom:1px solid var(--line);padding:11px 18px;font-size:12.5px;color:var(--mute);font-family:var(--mono)}
+.demo .bd{padding:20px 18px}
+.row{display:flex;align-items:center;gap:12px;padding:8px 0;font-size:15px}
+.row .nm{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.row .bar{width:34%;height:7px;background:#eceef0;border-radius:4px;overflow:hidden;flex-shrink:0}
+.row .bar>i{display:block;height:100%;background:var(--ink2);border-radius:4px}
+.row .n{width:52px;text-align:right;font-variant-numeric:tabular-nums;color:var(--mute);font-size:13.5px;flex-shrink:0}
+.row.me{color:var(--crit);font-weight:600}
+.row.me .bar>i{background:var(--crit)}
+.row.me .n{color:var(--crit)}
+ul.check{list-style:none;margin:0 0 20px}
+ul.check li{padding-left:27px;position:relative;margin-bottom:12px;color:var(--ink2)}
+ul.check li::before{content:"";position:absolute;left:2px;top:9px;width:9px;height:9px;border-radius:50%;background:var(--accent)}
+ul.check li b{color:var(--ink);font-weight:600}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(215px,1fr));gap:18px;margin:26px 0}
+.card{border:1px solid var(--line);border-radius:11px;padding:20px}
+.card .k{font-family:var(--serif);font-size:31px;line-height:1.1;margin-bottom:5px}
+.card .d{font-size:14.5px;color:var(--mute)}
+.price{border:1.5px solid var(--ink);border-radius:14px;padding:32px;margin:26px 0}
+.price .amt{font-family:var(--serif);font-size:52px;line-height:1;letter-spacing:-.02em}
+.price .amt small{font-size:17px;color:var(--mute);font-family:var(--sans);letter-spacing:0;margin-left:7px}
+.price ul{margin-top:22px}
+form{margin:22px 0}
+label{display:block;font-size:13px;font-weight:600;margin:14px 0 5px;color:var(--ink)}
+input,select{width:100%;padding:12px 14px;border:1px solid var(--line);border-radius:8px;font-size:16px;font-family:inherit;background:var(--bg);color:var(--ink)}
+input:focus,select:focus{outline:2px solid var(--accent);outline-offset:-1px;border-color:transparent}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+@media(max-width:560px){.two{grid-template-columns:1fr}}
+details{border-top:1px solid var(--line);padding:16px 0}
+details summary{cursor:pointer;font-weight:600;font-size:16.5px;list-style:none}
+details summary::-webkit-details-marker{display:none}
+details summary::before{content:"+ ";color:var(--accent);font-weight:700}
+details[open] summary::before{content:"− "}
+details p{margin:12px 0 0}
+footer{border-top:1px solid var(--line);padding:44px 0 64px;font-size:14px;color:var(--mute);margin-top:40px}
+footer a{color:var(--mute)}
+footer a:hover{color:var(--accent)}
+.fcols{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:28px;margin-bottom:34px}
+.fh{font-size:12px;letter-spacing:.13em;text-transform:uppercase;font-weight:700;color:var(--ink);margin-bottom:9px}
+.fp{font-size:14px;color:var(--mute);margin:0;line-height:1.7}
+.fnote{border-top:1px solid var(--line);padding-top:24px}
+.fnote p{font-size:13px;line-height:1.65;color:var(--mute);margin-bottom:12px}
+.fnote strong{color:var(--ink2)}
+.copy{padding-top:10px;border-top:1px solid var(--line);margin-top:16px}
+.src{font-size:13.5px;color:var(--mute);border-left:2px solid var(--line);padding-left:14px;margin:20px 0}
+</style></head><body>
+
+<header><div class="wrap">
+  <div class="logo">AI<i>·</i>Shortlisted</div>
+  <a class="cta" href="#check">Free check →</a>
+</div></header>
+
+<div class="wrap">
+
+<section class="hero">
+  <h1>When someone asks AI to recommend a business like yours, does your name come up?</h1>
+  <p class="lede">Your customers have stopped scrolling through ten blue links. They ask ChatGPT, Gemini or Perplexity for a recommendation, and it names <strong>three or four businesses</strong>. If you're not one of them, you were never in the running.</p>
+  <div class="btns">
+    <a class="btn" href="#check">Get a free check</a>
+    <a class="btn ghost" href="#report">See what's in the report</a>
+  </div>
+  <p class="fine">Free check takes about a minute. No account, no card.</p>
+
+  <div class="demo">
+    <div class="hd">"I need a cosmetic dentist in Brisbane for veneers — who's best?" — asked 30 different ways</div>
+    <div class="bd">
+      <div class="row"><span class="nm">Brisbane Smile Boutique</span><span class="bar"><i style="width:78%"></i></span><span class="n">23/30</span></div>
+      <div class="row"><span class="nm">Bite Dental Studios</span><span class="bar"><i style="width:61%"></i></span><span class="n">18/30</span></div>
+      <div class="row"><span class="nm">Malouf Dental</span><span class="bar"><i style="width:47%"></i></span><span class="n">14/30</span></div>
+      <div class="row me"><span class="nm">★ Your clinic</span><span class="bar"><i style="width:2%"></i></span><span class="n">0/30</span></div>
+    </div>
+  </div>
+  <p class="fine">Illustrative layout. Your report uses your real category, your real city and your real competitors.</p>
+</section>
+
+<section>
+  <div class="eyebrow">The problem</div>
+  <h2>AI search is roughly thirty times more selective than Google</h2>
+  <p>Google's local pack shows you a list. An AI assistant gives an answer — one short list of names, with no second page and no "see more results". Either you're in it or you don't exist at that moment.</p>
+  <div class="src">SOCi analysed more than 350,000 locations across 2,751 multi-location brands. ChatGPT recommended just <strong>1.2%</strong> of them; Gemini 11%; Perplexity 7.4% — against an average 35.9% appearance rate in Google's local 3-pack. Locations that did get recommended averaged 4.3-star ratings. <em>(Study covers multi-location brands; independent businesses were not measured — which is exactly why we measure yours directly.)</em></div>
+  <p>Most business owners have simply never checked. It is not on any dashboard they own, and their SEO reports do not mention it.</p>
+</section>
+
+<section id="report">
+  <div class="eyebrow">What you get</div>
+  <h2>A measurement, not an opinion</h2>
+  <p>We generate 30 questions real customers actually ask when choosing a business in your category and city — including the awkward, specific, problem-led ones. We put every question to an AI assistant with live web search on, and record what happens.</p>
+  <div class="grid">
+    <div class="card"><div class="k">30</div><div class="d">real buyer questions, written the way people actually type them</div></div>
+    <div class="card"><div class="k">Every</div><div class="d">competitor the AI named instead of you, ranked by share of voice</div></div>
+    <div class="card"><div class="k">All</div><div class="d">web pages the AI actually read to decide — the citation gap</div></div>
+  </div>
+  <h3 style="margin-top:34px">The part nobody else shows you</h3>
+  <p>An AI assistant does not invent its shortlist. It reads specific pages first — directories, review sites, local magazines, forum threads, competitors' own sites — and builds the answer from those. We capture every one of those sources and tell you which ones you're absent from.</p>
+  <p>That turns a vague worry into a to-do list: <em>you are missing from these four sources the AI reads every single time.</em></p>
+  <ul class="check">
+    <li><b>Appearance rate</b> — how often you're named across all 30 questions, and your average position when you are.</li>
+    <li><b>Competitor leaderboard</b> — who is being recommended instead, and how dominant they are.</li>
+    <li><b>The citation gap</b> — every source the AI read, and whether you appear on it.</li>
+    <li><b>The questions you were invisible for</b> — verbatim, so you can see the customers you never met.</li>
+    <li><b>A prioritised action list</b> — built from your data, naming the actual sites to fix, not a generic checklist.</li>
+    <li><b>Paste-ready assets</b> — structured data for your homepage, an <code>llms.txt</code> file, and FAQ content matched to the real questions we tested.</li>
+  </ul>
+</section>
+
+<section>
+  <div class="eyebrow">Price</div>
+  <h2>One report, one price</h2>
+  <div class="price">
+    <div class="amt">$149<small>AUD, one-off</small></div>
+    <ul class="check" style="margin-top:20px">
+      <li>30 questions, run live against AI assistants with web search</li>
+      <li>Full competitor share-of-voice leaderboard</li>
+      <li>Complete citation-gap analysis</li>
+      <li>Prioritised action list built from your results</li>
+      <li>Paste-ready structured data, <code>llms.txt</code> and FAQ content</li>
+      <li>Delivered within 2 business days</li>
+    </ul>
+    <div class="btns" style="margin-top:24px"><a class="btn" href="#check">Start with a free check</a></div>
+    <p class="fine" style="margin:0">Agencies and multi-location groups: <a href="mailto:hello@aishortlisted.com">get in touch</a> for bulk pricing.</p>
+  </div>
+  <p class="fine">For comparison, agencies typically charge $500–$2,500 for a one-off AI visibility audit, and $1,000–$5,000 a month to manage it on an ongoing basis.</p>
+</section>
+
+<section id="check">
+  <div class="eyebrow">Start here</div>
+  <h2>Free check</h2>
+  <p>Tell us your business and we'll run a short version — three real buyer questions for your category and city — and send you what the AI actually said, including who it recommended instead. No cost, no card, no account.</p>
+  <form id="f">
+    <div class="two">
+      <div><label for="name">Business name</label><input id="name" name="business" required placeholder="e.g. Zen Dental Studio"></div>
+      <div><label for="site">Website</label><input id="site" name="website" required placeholder="yourbusiness.com.au"></div>
+    </div>
+    <div class="two">
+      <div><label for="cat">What you do</label><input id="cat" name="category" required placeholder="e.g. cosmetic dentist"></div>
+      <div><label for="city">City or area</label><input id="city" name="city" required placeholder="e.g. Brisbane"></div>
+    </div>
+    <label for="email">Where should we send it?</label><input id="email" name="email" type="email" required placeholder="you@yourbusiness.com.au">
+    <div class="btns" style="margin-top:22px"><button class="btn" type="submit">Send me my free check</button></div>
+    <p class="fine">We use your details to run the check and send you the result. Nothing else. Unsubscribe any time.</p>
+    <p class="fine" id="fallback" hidden>Your email app should have opened. If it didn't, email <a id="fbmail" href="#"></a> with your business name, website, what you do and your city.</p>
+  </form>
+</section>
+
+<section>
+  <div class="eyebrow">Questions</div>
+  <h2>Straight answers</h2>
+  <details><summary>Is this exactly what ChatGPT shows my customers?</summary>
+    <p>No, and we won't pretend otherwise. We query AI models through their APIs with live web search enabled. That's a strong, repeatable measure of how AI systems describe your market and who they favour — but the consumer apps add personalisation, memory, location signals and their own instructions, and answers vary between runs. We report what we measured and label it clearly.</p></details>
+  <details><summary>Can you guarantee you'll get me recommended?</summary>
+    <p>No. Anyone who guarantees an AI ranking is guessing. What we can do is measure your current position precisely, show you exactly which sources the AI reads, and tell you which of those you're missing from. What you do with that is the part that moves the number.</p></details>
+  <details><summary>Does this matter for my industry?</summary>
+    <p>It matters most where people research before they buy — cosmetic and dental clinics, specialists, legal and financial services, high-value trades. It matters least for genuine emergencies, where people just open Maps. If you're not sure, run the free check; it costs you nothing and the answer is specific to you.</p></details>
+  <details><summary>What do I actually do with the report?</summary>
+    <p>Most of the actions are things you or your web person can do in an afternoon: claim and correct listings on the specific directories we name, publish FAQ content matching the real questions we found, and add the structured data we generate for you. We give you the files ready to paste.</p></details>
+  <details><summary>Who's behind this?</summary>
+    <p>A small independent operation in Queensland, Australia. You'll deal with a person, not a support queue.</p></details>
+</section>
+
+</div>
+<footer><div class="wrap">
+  <div class="fcols">
+    <div>
+      <div class="fh">AI Shortlisted</div>
+      <p class="fp">Liam Coverdale trading as AI&nbsp;Shortlisted<br>
+      ABN 46 797 836 543<br>
+      Sunshine Coast, Queensland, Australia</p>
+    </div>
+    <div>
+      <div class="fh">Contact</div>
+      <p class="fp"><a href="mailto:hello@aishortlisted.com">hello@aishortlisted.com</a><br>
+      We reply to every email, usually same day.</p>
+    </div>
+    <div>
+      <div class="fh">Legal</div>
+      <p class="fp"><a href="/terms.html">Terms &amp; conditions</a><br>
+      <a href="/terms.html#refunds">Refund policy</a><br>
+      <a href="/privacy.html">Privacy policy</a><br>
+      <a href="/privacy.html#outreach">How we contact businesses</a></p>
+    </div>
+  </div>
+
+  <div class="fnote">
+    <p><strong>What we do and don't claim.</strong> We measure how AI assistants respond to questions about your market on the day we run the test, and we report exactly what we observed. We do not guarantee that you will be recommended by any AI assistant, that your visibility will improve, or that you will gain customers. Results come from AI model APIs with web search enabled and are not identical to what an individual sees in the ChatGPT, Gemini, Claude or Perplexity apps. AI answers vary between runs.</p>
+    <p><strong>Refunds.</strong> If you read your report and don't think it was worth $149, tell us within 14 days and we'll refund you in full — no questions, nothing to return. This is in addition to your rights under the Australian Consumer Law, which cannot be excluded.</p>
+    <p><strong>Not professional advice.</strong> Our recommendations are informed opinion, not legal, medical, financial or marketing advice. If you are a registered health practitioner, you remain responsible for your obligations under the Health Practitioner Regulation National Law and the AHPRA advertising guidelines.</p>
+    <p class="copy">© 2026 Liam Coverdale. Business names and trade marks mentioned in reports belong to their respective owners and are referenced for the purpose of factual comparison.</p>
+  </div>
+</div></footer>
+<script>
+(function(){
+  // Interim delivery path. Swap to a form endpoint once a mailbox exists.
+  var INBOX = "hello@aishortlisted.com";
+  var f = document.getElementById('f');
+  document.getElementById('fbmail').textContent = INBOX;
+  document.getElementById('fbmail').href = 'mailto:' + INBOX;
+  f.addEventListener('submit', function(e){
+    e.preventDefault();
+    var g = function(n){ return (f.elements[n] && f.elements[n].value || '').trim(); };
+    var subject = 'Free AI visibility check — ' + (g('business') || 'enquiry');
+    var body = [
+      'Business: ' + g('business'),
+      'Website: '  + g('website'),
+      'Category: ' + g('category'),
+      'City: '     + g('city'),
+      'Reply to: ' + g('email'),
+      '', 'Please run my free check.'
+    ].join('\n');
+    var href = 'mailto:' + INBOX +
+      '?subject=' + encodeURIComponent(subject) +
+      '&body=' + encodeURIComponent(body);
+    // Put the fully pre-filled address on the fallback link too, so the user is
+    // never stranded if their browser has no mail handler.
+    var fb = document.getElementById('fbmail');
+    fb.href = href; fb.textContent = INBOX;
+    document.getElementById('fallback').hidden = false;
+    window.location.href = href;
+  });
+})();
+</script>
+</body></html>
