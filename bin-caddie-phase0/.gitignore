@@ -1,0 +1,5 @@
+# Raw and derived data stay local - Inside Airbnb terms (no republishing) and privacy.
+data/
+outputs/
+mail/*.pdf
+__pycache__/
