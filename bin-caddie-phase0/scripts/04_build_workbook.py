@@ -60,15 +60,26 @@ def load_accounts(hosts: pd.DataFrame) -> pd.DataFrame:
     )
     a["contactable"] = contactable.map({True: "yes", False: "no"})
     # Phone-only accounts start with a business-landline call, then a contact-form enquiry.
+    # Researchers flag emails that are the wrong inbox (sister brand, guest-only) in `status`.
+    email_ok = has_email & ~a.status.str.contains(r"phone only|call office|phone/form|phone/web form|partner form", case=False)
     a["first_channel"] = ""
-    a.loc[contactable & has_email, "first_channel"] = "email"
-    a.loc[contactable & ~has_email, "first_channel"] = "phone (business line)"
-    # Phase 0 test group: 5 accounts per angle, biggest portfolios first.
+    a.loc[contactable & email_ok, "first_channel"] = "email"
+    a.loc[contactable & ~email_ok, "first_channel"] = "phone (business line) / web form"
+
+    # Several Airbnb host names are brands of one company: pitch the company once.
+    a["group"] = a.business_name.where(a.business_name != "", a.host_name)
+    a.loc[a.business_name.str.contains("Alloggio", case=False), "group"] = "Alloggio Group"
+    a.loc[a.business_name.str.contains("Utopia", case=False), "group"] = "Stay Utopia"
+    a["group_listings_total"] = a.groupby("group").active_listings_here.transform("sum")
+
+    # Phase 0 test group: 5 groups per angle, biggest portfolios first, one row per group.
     a["test_group"] = ""
+    lead_rows = a[contactable].sort_values("active_listings_here", ascending=False).drop_duplicates("group")
     for ang in a.angle.unique():
-        idx = a[(a.angle == ang) & contactable].sort_values("active_listings_here", ascending=False).index[:5]
+        idx = lead_rows[lead_rows.angle == ang].sort_values("group_listings_total", ascending=False).index[:5]
         a.loc[idx, "test_group"] = "Phase 0 wave 1"
-    cols = ["test_group", "host_name", "business_name", "active_listings_here", "houses", "units",
+    cols = ["test_group", "group", "group_listings_total", "host_name", "business_name",
+            "active_listings_here", "houses", "units",
             "top_suburbs", "angle", "pitch_angle", "first_channel", "published_email", "email_source_url", "published_phone",
             "phone_source_url", "decision_maker", "website", "business_type", "office_suburb",
             "no_marketing_notice", "contactable", "confidence", "status", "portfolio_notes",
