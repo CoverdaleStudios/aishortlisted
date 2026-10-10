@@ -50,20 +50,26 @@ def load_accounts(hosts: pd.DataFrame) -> pd.DataFrame:
         if col not in a:
             a[col] = ""
     a = a.fillna("")
+    has_email = a.published_email.str.contains("@")
+    has_phone = a.published_phone.str.contains(r"\d{6}", regex=True) | a.published_phone.str.replace(" ", "").str.contains(r"\d{8}")
     contactable = (
-        a.published_email.str.contains("@")
+        (has_email | has_phone)
         & ~a.no_marketing_notice.str.lower().eq("yes")
         & ~a.confidence.str.lower().eq("low")
-        & ~a.status.str.lower().str.contains("individual")
+        & ~a.status.str.lower().str.contains("individual|unidentified|do not contact")
     )
     a["contactable"] = contactable.map({True: "yes", False: "no"})
+    # Phone-only accounts start with a business-landline call, then a contact-form enquiry.
+    a["first_channel"] = ""
+    a.loc[contactable & has_email, "first_channel"] = "email"
+    a.loc[contactable & ~has_email, "first_channel"] = "phone (business line)"
     # Phase 0 test group: 5 accounts per angle, biggest portfolios first.
     a["test_group"] = ""
     for ang in a.angle.unique():
         idx = a[(a.angle == ang) & contactable].sort_values("active_listings_here", ascending=False).index[:5]
         a.loc[idx, "test_group"] = "Phase 0 wave 1"
     cols = ["test_group", "host_name", "business_name", "active_listings_here", "houses", "units",
-            "top_suburbs", "angle", "pitch_angle", "published_email", "email_source_url", "published_phone",
+            "top_suburbs", "angle", "pitch_angle", "first_channel", "published_email", "email_source_url", "published_phone",
             "phone_source_url", "decision_maker", "website", "business_type", "office_suburb",
             "no_marketing_notice", "contactable", "confidence", "status", "portfolio_notes",
             "current_bin_or_cleaning_mentions"]
@@ -180,9 +186,10 @@ def main() -> None:
     dash["A1"] = "Bin Caddie - Phase 0 scorecard"
     dash["A1"].font = Font(bold=True, size=16, color="16324F")
     dash["A2"] = "Pass = 3+ manager meetings AND 1+ pilot signed. Outcomes are counted from the Outreach Log."
+    contact_col = get_column_letter(list(accounts.columns).index("contactable") + 1)
     rows = [
         ("Wave 1 accounts selected", "=COUNTIF(Accounts!A:A,\"Phase 0 wave 1\")", None),
-        ("Accounts contactable (published email)", "=COUNTIF(Accounts!S:S,\"yes\")", None),
+        ("Accounts contactable (published business email/phone)", f"=COUNTIF(Accounts!{contact_col}:{contact_col},\"yes\")", None),
         ("Touches logged", "=COUNTA('Outreach Log'!A:A)-1", None),
         ("Replies", "=COUNTIF('Outreach Log'!G:G,\"replied\")+COUNTIF('Outreach Log'!G:G,\"meeting booked\")+COUNTIF('Outreach Log'!G:G,\"pilot agreed\")", None),
         ("Meetings booked", "=COUNTIF('Outreach Log'!G:G,\"meeting booked\")+COUNTIF('Outreach Log'!G:G,\"pilot agreed\")", 3),
