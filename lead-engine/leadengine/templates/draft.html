@@ -1,0 +1,13 @@
+{% extends "base.html" %}{% block title %}Draft #{{ d.id }}{% endblock %}{% block body %}
+<p class="small"><a href="{{ url_for('outbox') }}">← Outbox</a>{% if a %} · <a href="{{ url_for('account', aid=a.id) }}">{{ a.trading_name or a.display_name }}</a>{% endif %}{% if p %} · <a href="{{ url_for('property_detail', pid=p.id) }}">{{ p.address }}</a>{% endif %}</p>
+<h1>{{ d.channel|capitalize }} #{{ d.id }} <span class="pill">{{ d.status }}</span></h1>
+<div class="two"><div class="card"><form method="post"><p><b>To:</b> {{ d.to_address }}</p>
+<label>Subject</label><input name="subject" value="{{ d.subject }}" style="width:100%" {{ 'disabled' if d.status!='draft' }}>
+<label>Body</label><textarea name="body" style="min-height:420px" {{ 'disabled' if d.status!='draft' }}>{{ d.body }}</textarea>
+{% if d.status=='draft' %}<button class="secondary">Save edits</button>{% endif %}</form></div>
+<div class="card"><h2>Compliance</h2>{% for e in report.errors %}<p class="err">✗ {{ e }}</p>{% endfor %}{% for w in report.warnings %}<p class="warnc">! {{ w }}</p>{% endfor %}{% if not report.errors %}<p>✓ Passes.</p>{% endif %}
+{% if d.status=='draft' %}<form method="post" action="{{ url_for('draft_approve', did=d.id) }}"><button>Approve</button></form>{% endif %}
+{% if d.status=='approved' %}<form method="post" action="{{ url_for('draft_send', did=d.id) }}"><button class="good">{{ 'Mark as posted' if d.channel=='letter' else 'Deliver now' }}</button></form>{% endif %}
+{% if d.channel=='letter' %}<p><a class="btn secondary" target="_blank" href="{{ url_for('draft', did=d.id, print=1) }}">Print view</a></p>{% endif %}
+{% if d.status in ['draft','approved'] %}<form method="post" action="{{ url_for('draft_cancel', did=d.id) }}"><button class="danger">Cancel</button></form>{% endif %}
+{% if d.error %}<p class="err small">{{ d.error }}</p>{% endif %}{% if d.provider_ref %}<p class="small muted">{{ d.provider }}: {{ d.provider_ref }}</p>{% endif %}</div></div>{% endblock %}

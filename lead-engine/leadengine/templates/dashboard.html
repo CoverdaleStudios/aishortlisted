@@ -1,0 +1,18 @@
+{% extends "base.html" %}{% block title %}Dashboard{% endblock %}{% block body %}
+<h1>Dashboard</h1>
+{% if '[' in settings.sender_name %}<div class="flash error">Set your sender name in <a href="{{ url_for('settings_page') }}">Settings</a> - drafts can't be approved while it's a placeholder.</div>{% endif %}
+<div class="grid">
+ <div class="card"><div class="muted">Business accounts</div><div class="stat">{{ stats.accounts }}</div><div class="small muted">{{ stats.contacts_email }} with a published email</div></div>
+ <div class="card"><div class="muted">Opted-in owners</div><div class="stat">{{ stats.owners }}</div><div class="small muted">from the owner form (consented)</div></div>
+ <div class="card"><div class="muted">Properties (council data)</div><div class="stat">{{ stats.properties }}</div><div class="small muted">letters to "The Owner"</div></div>
+ <div class="card"><div class="muted">Outbox</div><div class="stat">{{ stats.drafts }} / {{ stats.approved }} / {{ stats.sent }}</div><div class="small muted">draft / approved / sent · {{ stats.suppressed }} suppressed</div></div>
+</div>
+<div class="two">
+<div class="card"><h2>Biggest open accounts</h2><table><tr><th>Account</th><th>Listings</th><th>Angle</th><th>Status</th></tr>
+{% for a in top %}<tr><td><a href="{{ url_for('account', aid=a.id) }}">{{ a.trading_name or a.display_name }}</a>{% if a.group_name %} <span class="pill">{{ a.group_name }}</span>{% endif %}</td><td>{{ a.listings_active }}</td><td><span class="pill {{ a.angle }}">{{ a.angle }}</span></td><td>{{ a.status }}</td></tr>{% else %}<tr><td colspan="4" class="muted">No accounts yet - import the Phase 0 data →</td></tr>{% endfor %}</table></div>
+<div>
+<div class="card"><h2>Pipeline</h2><table>{% for r in by_status %}<tr><td>{{ r.status }}</td><td>{{ r.n }}</td><td class="muted small">{{ r.l or 0 }} listings</td></tr>{% endfor %}</table></div>
+<div class="card"><h2>Data</h2><form method="post" action="{{ url_for('run_import') }}"><button>Import / refresh Phase 0 data</button></form>
+<p class="small muted">Loads business hosts, researched contacts and council properties from <code>bin-caddie-phase0/</code>. Safe to re-run.</p></div>
+<div class="card"><h2>Calling window</h2><p class="{{ 'muted' if call_ok else 'warnc' }}">{{ call_msg }}</p><p class="small muted">Email via: <b>{{ settings.email_provider }}</b> · daily cap {{ settings.daily_send_cap }}</p></div>
+</div></div>{% endblock %}

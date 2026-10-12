@@ -1,0 +1,9 @@
+{% extends "base.html" %}{% block title %}Properties{% endblock %}{% block body %}
+<h1>Properties</h1>
+<p class="muted">Addresses from council approvals. No owner names are held - the route is a letter to "The Owner", or the owner opting in through the form.</p>
+<form class="row card" method="get"><div><label>Search</label><input name="q" value="{{ q }}" placeholder="street or suburb"></div>
+<div><label>Signal</label><select name="signal"><option value="">any</option>{% for s in ['short_term_accommodation','dual_occupancy','secondary_dwelling','owner_provided'] %}<option {{ 'selected' if s==signal }}>{{ s }}</option>{% endfor %}</select></div>
+<div><label>Status</label><select name="status"><option value="">any</option>{% for s in ['new','letter_queued','letter_sent','responded','customer','do_not_contact'] %}<option {{ 'selected' if s==status }}>{{ s }}</option>{% endfor %}</select></div><button>Filter</button></form>
+<div class="card"><form method="post" action="{{ url_for('property_letters_bulk') }}" class="row"><div><label>Queue letters for the newest short-stay houses</label><input name="limit" type="number" value="50" style="width:90px"></div><button>Queue letters</button></form></div>
+<div class="card"><table><tr><th>Address</th><th>Type</th><th>Signal</th><th>Approved/received</th><th>Short-stays nearby</th><th>Status</th></tr>
+{% for p in rows %}<tr><td><a href="{{ url_for('property_detail', pid=p.id) }}">{{ p.address }}</a></td><td>{{ p.kind }}</td><td class="small">{{ p.signal }}</td><td class="small">{{ p.da_date or '' }}</td><td>{{ p.hex_active_listings or '' }}</td><td>{{ p.status }}</td></tr>{% endfor %}</table></div>{% endblock %}

@@ -1,0 +1,6 @@
+{% extends "base.html" %}{% block title %}Templates{% endblock %}{% block body %}
+<h1>Templates</h1><p><a class="btn" href="{{ url_for('template_edit', tid=0) }}">New template</a></p>
+<div class="card"><table><tr><th>Name</th><th>Audience</th><th>Angle</th><th>Channel</th><th>Active</th></tr>
+{% for t in rows %}<tr><td><a href="{{ url_for('template_edit', tid=t.id) }}">{{ t.name }}</a></td><td>{{ t.audience }}</td><td>{{ t.angle or '' }}</td><td>{{ t.channel }}</td><td>{{ 'yes' if t.active else 'no' }}</td></tr>{% endfor %}</table></div>
+<div class="card small"><h2>Merge fields</h2><code>{% raw %}{{ greeting_name }} {{ account.trading_name }} {{ account.registered_name }} {{ contact.first_name }} {{ contact.role }} {{ portfolio.listings }} {{ portfolio.houses }} {{ portfolio.units }} {{ portfolio.first_suburb }} {{ portfolio.suburbs }} {{ hook }} {{ property.address }} {{ property.collection_day }} {{ sender.name }} {{ sender.phone }} {{ offer.price }} {{ offer.trial }} {{ letter_code }}{% endraw %}</code>
+<p class="muted">The Spam Act footer (sender ID + unsubscribe) is added to every email automatically.</p></div>{% endblock %}

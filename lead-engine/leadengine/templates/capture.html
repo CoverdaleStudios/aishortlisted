@@ -1,0 +1,15 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Bin Caddie - bin service enquiry</title>
+<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}"><style>main{max-width:560px}</style></head><body><main>
+<h1>Holiday rental bin service: quick enquiry</h1><p class="muted">Bin Caddie puts your bins out before council collection and brings them back in, twice a week, with photo proof. Tell us about your property and we'll be in touch.</p>
+{% with msgs = get_flashed_messages(with_categories=true) %}{% for cat, m in msgs %}<div class="flash {{ cat }}">{{ m }}</div>{% endfor %}{% endwith %}
+<form method="post" class="card"><input type="hidden" name="code" value="{{ code }}">
+<label>Your name</label><input name="name" required style="width:100%" value="{{ form.name if form }}">
+<label>Email</label><input name="email" type="email" required style="width:100%" value="{{ form.email if form }}">
+<label>Phone (optional)</label><input name="phone" style="width:100%" value="{{ form.phone if form }}">
+<label>Property address</label><input name="address" required style="width:100%" value="{{ form.address if form }}">
+<div class="row"><div><label>Type</label><select name="kind"><option>house</option><option>townhouse</option><option>unit</option></select></div>
+<div><label>Bins</label><select name="bins"><option>2</option><option>3</option><option>4</option><option>5+</option></select></div>
+<div><label>Collection day (if known)</label><select name="collection_day"><option value="">not sure</option>{% for d in ['Monday','Tuesday','Wednesday','Thursday','Friday'] %}<option>{{ d }}</option>{% endfor %}</select></div></div>
+<label>Anything else?</label><textarea name="message" style="min-height:70px">{{ form.message if form }}</textarea>
+<label style="color:var(--ink);font-size:13px"><input type="checkbox" name="consent" value="1"> {{ consent }}</label>
+<p><button class="good">Send enquiry</button></p><p class="small muted">We only use these details to respond about our bin services. See our privacy policy.</p></form></main></body></html>

@@ -1,0 +1,12 @@
+{% extends "base.html" %}{% block title %}Template{% endblock %}{% block body %}
+<p class="small"><a href="{{ url_for('templates_list') }}">← Templates</a></p><h1>{{ t.name if t else 'New template' }}</h1>
+<div class="two"><div class="card"><form method="post">
+<label>Name</label><input name="name" value="{{ t.name if t else '' }}" style="width:100%" required>
+<div class="row"><div><label>Audience</label><select name="audience">{% for x in ['business','owner','property_letter'] %}<option {{ 'selected' if t and t.audience==x }}>{{ x }}</option>{% endfor %}</select></div>
+<div><label>Angle</label><input name="angle" value="{{ t.angle if t else '' }}" style="width:60px"></div>
+<div><label>Channel</label><select name="channel">{% for x in ['email','letter'] %}<option {{ 'selected' if t and t.channel==x }}>{{ x }}</option>{% endfor %}</select></div>
+<div><label><input type="checkbox" name="active" value="1" {{ 'checked' if not t or t.active }}> active</label></div></div>
+<label>Subject</label><input name="subject" value="{{ t.subject if t else '' }}" style="width:100%">
+<label>Body</label><textarea name="body" style="min-height:380px">{{ t.body if t else '' }}</textarea><button>Save</button></form></div>
+<div class="card"><h2>Preview{% if sample %} · {{ sample.trading_name or sample.display_name }}{% endif %}</h2>
+{% if preview %}{% if preview[2] %}{% for pr in preview[2] %}<p class="warnc">! {{ pr }}</p>{% endfor %}{% endif %}<p><b>{{ preview[0] }}</b></p><pre>{{ preview[1] }}</pre>{% else %}<p class="muted">Save, then preview against your largest account.</p>{% endif %}</div></div>{% endblock %}

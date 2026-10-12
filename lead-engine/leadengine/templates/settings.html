@@ -1,0 +1,12 @@
+{% extends "base.html" %}{% block title %}Settings{% endblock %}{% block body %}
+<h1>Settings</h1><form method="post"><div class="grid">
+<div class="card"><h2>Sender (used in every message)</h2>{% for k in ['sender_name','sender_role','business_name','business_phone','business_email','business_website','business_abn','business_location'] %}<label>{{ k }}</label><input name="{{ k }}" value="{{ s[k] }}" style="width:100%">{% endfor %}</div>
+<div class="card"><h2>Offer</h2>{% for k in ['offer_price','offer_trial'] %}<label>{{ k }}</label><input name="{{ k }}" value="{{ s[k] }}" style="width:100%">{% endfor %}
+<h2 style="margin-top:16px">Email delivery</h2><label>email_provider</label><select name="email_provider">{% for x in ['outbox','smtp','gmail','outlook'] %}<option {{ 'selected' if s.email_provider==x }}>{{ x }}</option>{% endfor %}</select>
+<p class="small muted"><b>outbox</b> = nothing is sent; approved emails are saved as .eml files in <code>lead-engine/exports/outbox/</code>. <b>smtp</b> sends through your mailbox (password via the LEADENGINE_SMTP_PASSWORD environment variable). Gmail/Outlook OAuth connectors: coming later.</p>
+{% for k in ['daily_send_cap','smtp_host','smtp_port','smtp_username','smtp_from'] %}<label>{{ k }}</label><input name="{{ k }}" value="{{ s[k] }}" style="width:100%">{% endfor %}</div>
+<div class="card"><h2>Enrichment</h2><label>abr_guid (ABN Lookup web services GUID)</label><input name="abr_guid" value="{{ s.abr_guid }}" style="width:100%">
+<p class="small muted">Free from abr.business.gov.au → Web services → Register.</p>
+<label>llm_enabled</label><select name="llm_enabled">{% for x in ['auto','on','off'] %}<option {{ 'selected' if s.llm_enabled==x }}>{{ x }}</option>{% endfor %}</select>
+<label>llm_model (a current Claude model ID)</label><input name="llm_model" value="{{ s.llm_model }}"><p class="small muted">Claude is {{ 'available' if llm else 'not configured (set ANTHROPIC_API_KEY and a model ID)' }}. Without it, summaries and hooks use built-in rules.</p></div>
+</div><button>Save settings</button></form>{% endblock %}

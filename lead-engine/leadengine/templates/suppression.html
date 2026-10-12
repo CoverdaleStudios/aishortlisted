@@ -1,0 +1,4 @@
+{% extends "base.html" %}{% block title %}Suppression{% endblock %}{% block body %}
+<h1>Suppression list</h1><p class="muted">Anyone here is never emailed, called or sent a letter again. Use an email, an <code>@domain</code>, phone digits, or a street address.</p>
+<div class="card"><form method="post" class="row"><div><label>Value</label><input name="value" style="width:320px"></div><div><label>Reason</label><input name="reason" value="unsubscribed"></div><button>Add</button></form></div>
+<div class="card"><table><tr><th>Value</th><th>Reason</th><th>Added</th></tr>{% for r in rows %}<tr><td>{{ r.value }}</td><td>{{ r.reason }}</td><td class="small">{{ r.created_at[:10] }}</td></tr>{% endfor %}</table></div>{% endblock %}

@@ -1,0 +1,10 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>{% block title %}Lead Engine{% endblock %} · Bin Caddie</title><link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}"></head>
+<body><header><b>Bin Caddie · Lead Engine</b>
+<a href="{{ url_for('dashboard') }}">Dashboard</a><a href="{{ url_for('accounts') }}">Accounts</a>
+<a href="{{ url_for('properties') }}">Properties</a><a href="{{ url_for('bulk') }}">Bulk drafts</a>
+<a href="{{ url_for('outbox') }}">Outbox</a><a href="{{ url_for('templates_list') }}">Templates</a>
+<a href="{{ url_for('suppression') }}">Suppression</a><a href="{{ url_for('settings_page') }}">Settings</a>
+<a href="{{ url_for('capture') }}" target="_blank">Owner form ↗</a></header>
+<main>{% with msgs = get_flashed_messages(with_categories=true) %}{% for cat, m in msgs %}<div class="flash {{ cat }}">{{ m }}</div>{% endfor %}{% endwith %}
+{% block body %}{% endblock %}</main></body></html>

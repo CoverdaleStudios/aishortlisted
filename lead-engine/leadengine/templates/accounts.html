@@ -1,0 +1,12 @@
+{% extends "base.html" %}{% block title %}Accounts{% endblock %}{% block body %}
+<h1>Accounts</h1>
+<form class="row card" method="get"><div><label>Search</label><input name="q" value="{{ q }}" placeholder="name or suburb"></div>
+<div><label>Status</label><select name="status"><option value="">any</option>{% for s in statuses %}<option {{ 'selected' if s==status }}>{{ s }}</option>{% endfor %}</select></div>
+<div><label>Angle</label><select name="angle"><option value="">any</option>{% for x in ['A','B','C'] %}<option {{ 'selected' if x==angle }}>{{ x }}</option>{% endfor %}</select></div>
+<div><label>Type</label><select name="kind"><option value="">any</option><option {{ 'selected' if kind=='business' }}>business</option><option {{ 'selected' if kind=='owner' }}>owner</option></select></div>
+<button>Filter</button><a class="btn secondary" href="{{ url_for('export_accounts') }}">Export CSV</a></form>
+<div class="card"><table><tr><th>Account</th><th>Registered</th><th>Listings</th><th>H/U</th><th>Main suburbs</th><th>Angle</th><th>Email</th><th>Status</th></tr>
+{% for a in rows %}<tr><td><a href="{{ url_for('account', aid=a.id) }}">{{ a.trading_name or a.display_name }}</a>{% if a.kind=='owner' %} <span class="pill">owner</span>{% endif %}{% if a.group_name %}<div class="small muted">{{ a.group_name }}</div>{% endif %}</td>
+<td class="small">{{ a.registered_name or '' }}</td><td>{{ a.listings_active }}</td><td class="small">{{ a.houses }}/{{ a.units }}</td>
+<td class="small">{{ (a.top_suburbs or '')[:60] }}</td><td>{% if a.angle %}<span class="pill {{ a.angle }}">{{ a.angle }}</span>{% endif %}</td>
+<td class="small">{{ a.email or '—' }}</td><td>{{ a.status }}</td></tr>{% endfor %}</table></div>{% endblock %}

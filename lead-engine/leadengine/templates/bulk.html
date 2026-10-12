@@ -1,0 +1,12 @@
+{% extends "base.html" %}{% block title %}Bulk drafts{% endblock %}{% block body %}
+<h1>Bulk personalised drafts</h1>
+<div class="card"><form method="post" class="row">
+<div><label>Template</label><select name="template_mode"><option value="by_angle">Match each account's angle (A/B/C)</option><option value="fixed">Use one template →</option></select></div>
+<div><label>Fixed template</label><select name="template_id">{% for t in templates %}<option value="{{ t.id }}">{{ t.name }}</option>{% endfor %}</select></div>
+<div><label>Angle</label><select name="angle"><option value="">any</option><option>A</option><option>B</option><option>C</option></select></div>
+<div><label>Min listings</label><input name="min_listings" type="number" value="10" style="width:90px"></div>
+<div><label>Max drafts</label><input name="limit" type="number" value="15" style="width:90px"></div>
+<button>Create drafts</button></form>
+<p class="small muted">Only accounts in status <i>researched</i> or <i>ready</i> with a published email. One draft per group (e.g. Alloggio). Nothing is sent - drafts go to the Outbox for review.</p></div>
+{% if made is defined %}<div class="card"><h2>Created {{ made }} draft(s)</h2>{% for s in skipped %}<div class="small muted">skipped · {{ s }}</div>{% endfor %}<p><a class="btn" href="{{ url_for('outbox', status='draft') }}">Review in Outbox →</a></p></div>{% endif %}
+{% endblock %}

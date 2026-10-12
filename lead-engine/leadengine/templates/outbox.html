@@ -1,0 +1,10 @@
+{% extends "base.html" %}{% block title %}Outbox{% endblock %}{% block body %}
+<h1>Outbox</h1>
+<div class="card row"><span>Delivery: <b>{{ provider }}</b> · sent today {{ sent_today }} / {{ cap }}</span>
+<form class="inline" method="post" action="{{ url_for('approve_all') }}"><button class="secondary">Approve all passing drafts</button></form>
+<form class="inline" method="post" action="{{ url_for('send_approved') }}" onsubmit="return confirm('Deliver every approved email via {{ provider }}?')"><button class="good">Deliver approved emails</button></form></div>
+<form class="row" method="get" style="margin-bottom:10px"><select name="status"><option value="">all statuses</option>{% for s in ['draft','approved','exported','sent','failed','cancelled'] %}<option {{ 'selected' if s==status }}>{{ s }}</option>{% endfor %}</select>
+<select name="channel"><option value="">all channels</option><option {{ 'selected' if channel=='email' }}>email</option><option {{ 'selected' if channel=='letter' }}>letter</option></select><button class="secondary">Filter</button></form>
+<div class="card"><table><tr><th>#</th><th>To</th><th>Subject</th><th>Channel</th><th>Status</th><th>Check</th></tr>
+{% for d in rows %}{% set rep = json.loads(d.compliance or '{"errors":[],"warnings":[]}') %}<tr><td><a href="{{ url_for('draft', did=d.id) }}">{{ d.id }}</a></td><td>{{ d.display_name or d.address }}<div class="small muted">{{ d.to_address }}</div></td><td>{{ d.subject }}</td><td>{{ d.channel }}</td><td>{{ d.status }}</td>
+<td>{% if rep.errors %}<span class="err">✗ {{ rep.errors|length }}</span>{% else %}<span>✓</span>{% endif %}{% if rep.warnings %} <span class="warnc">! {{ rep.warnings|length }}</span>{% endif %}</td></tr>{% endfor %}</table></div>{% endblock %}

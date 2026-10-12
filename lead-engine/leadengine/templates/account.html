@@ -1,0 +1,56 @@
+{% extends "base.html" %}{% block title %}{{ a.trading_name or a.display_name }}{% endblock %}{% block body %}
+<p class="small"><a href="{{ url_for('accounts') }}">← Accounts</a></p>
+<h1>{{ a.trading_name or a.display_name }} {% if a.angle %}<span class="pill {{ a.angle }}">Angle {{ a.angle }}</span>{% endif %} <span class="pill">{{ a.status }}</span></h1>
+<div class="two"><div>
+
+<div class="card"><h2>Profile</h2><table>
+<tr><th>Type</th><td>{{ a.kind }}{% if a.business_type %} · {{ a.business_type }}{% endif %}</td></tr>
+<tr><th>Registered name</th><td>{{ a.registered_name or '—' }}{% if a.abn %} · ABN {{ a.abn }} ({{ a.abn_status }}, {{ a.entity_type }}, GST {{ a.gst_registered }}){% endif %}</td></tr>
+<tr><th>Office</th><td>{{ a.office_suburb or '—' }}{% if a.abn_state %} · ABR address {{ a.abn_state }} {{ a.abn_postcode }}{% endif %}</td></tr>
+<tr><th>Website</th><td>{% if a.website %}<a href="{{ a.website if a.website.startswith('http') else 'https://' ~ a.website }}" target="_blank">{{ a.website }}</a>{% else %}—{% endif %}</td></tr>
+<tr><th>Portfolio</th><td>{{ a.listings_active }} active listings · {{ a.houses }} houses · {{ a.units }} units<div class="small muted">{{ a.top_suburbs }}</div></td></tr>
+{% if a.group_name %}<tr><th>Group</th><td>{{ a.group_name }} — {% for x in group %}<a href="{{ url_for('account', aid=x.id) }}">{{ x.display_name }}</a> ({{ x.listings_active }}){{ ', ' if not loop.last }}{% endfor %}<div class="small muted">Pitch the group once.</div></td></tr>{% endif %}
+<tr><th>No-marketing notice</th><td>{{ a.no_marketing_notice }}</td></tr></table></div>
+
+<div class="card"><h2>Public-knowledge summary</h2>
+{% if summary %}<pre>{{ summary.text }}</pre><p class="small muted">by {{ summary.generated_by }} · {{ summary.generated_at }}</p>{% else %}<pre>{{ plain }}</pre>{% endif %}
+<div class="row" style="margin-top:8px"><form class="inline" method="post" action="{{ url_for('account_enrich', aid=a.id, kind='summary') }}"><button class="secondary">{{ 'AI summary (Claude)' if llm else 'Rebuild summary' }}</button></form>
+<form class="inline" method="post" action="{{ url_for('account_enrich', aid=a.id, kind='web') }}"><button class="secondary">Read their website</button></form>
+<form class="inline" method="post" action="{{ url_for('account_enrich', aid=a.id, kind='abr') }}"><button class="secondary">ABN Lookup</button></form></div></div>
+
+<div class="card"><h2>Facts &amp; sources ({{ facts|length }})</h2>
+{% for f in facts %}<div class="fact"><span class="pill">{{ f.topic }}</span> {{ f.fact }}<div class="small muted">{{ f.source_name or '' }}{% if f.source_url %} · <a href="{{ f.source_url }}" target="_blank">source</a>{% endif %}</div></div>{% else %}<p class="muted">No facts yet.</p>{% endfor %}</div>
+
+<div class="card"><h2>Write an email</h2>
+<form method="get" action="{{ url_for('compose', aid=a.id) }}" class="row">
+<div><label>Template</label><select name="template_id">{% for t in templates %}<option value="{{ t.id }}" {{ 'selected' if t.angle==a.angle }}>{{ t.name }}</option>{% endfor %}</select></div>
+<div><label>To</label><select name="contact_id">{% for c in contacts if c.email %}<option value="{{ c.id }}">{{ c.name or '' }} &lt;{{ c.email }}&gt;</option>{% else %}<option value="">no email contact</option>{% endfor %}</select></div>
+<button>Preview</button></form>
+<form method="post" action="{{ url_for('account_update', aid=a.id) }}" style="margin-top:10px"><label>Personal hook (first line of the email)</label>
+<div class="row"><input name="hook" value="{{ a.hook or '' }}" style="flex:1;min-width:300px"><button class="secondary">Save hook</button></div></form>
+<form method="post" action="{{ url_for('account_enrich', aid=a.id, kind='hook') }}" style="margin-top:6px"><button class="secondary">{{ 'Write hook with Claude' if llm else 'Suggest hook' }}</button></form></div>
+
+<div class="card"><h2>Drafts</h2><table>{% for d in drafts %}<tr><td><a href="{{ url_for('draft', did=d.id) }}">#{{ d.id }} {{ d.subject }}</a></td><td>{{ d.status }}</td><td class="small muted">{{ d.created_at[:10] }}</td></tr>{% else %}<tr><td class="muted">None yet.</td></tr>{% endfor %}</table></div>
+</div><div>
+
+<div class="card"><h2>Contacts</h2>
+{% for c in contacts %}<div class="fact"><b>{{ c.name or '(role address)' }}</b>{% if c.role %} · {{ c.role }}{% endif %}{% if c.is_primary %} <span class="pill">primary</span>{% endif %}
+<div>{{ c.email or '' }} {{ c.phone or '' }}</div><div class="small muted">basis: {{ c.basis }}{% if c.source_url %} · <a href="{{ c.source_url }}" target="_blank">published here</a>{% endif %}{% if c.consent_at %} · consent {{ c.consent_at[:10] }}{% endif %}</div>
+<form class="inline" method="post" action="{{ url_for('contact_delete', cid=c.id) }}"><button class="secondary small">remove</button></form></div>{% else %}<p class="muted">No contacts.</p>{% endfor %}
+<h3>Add contact</h3><form method="post" action="{{ url_for('contact_add', aid=a.id) }}">
+<label>Name</label><input name="name"><label>Role</label><input name="role"><label>Email</label><input name="email"><label>Phone</label><input name="phone">
+<label>Basis</label><select name="basis">{% if a.kind=='business' %}<option value="published_business">published by the business</option>{% endif %}<option value="consent">gave consent</option><option value="referral">referral / introduction</option></select>
+<label>Source URL (where it's published)</label><input name="source_url"><label>Consent wording (if consent)</label><input name="consent_text">
+<label><input type="checkbox" name="is_primary" value="1"> primary</label><button>Add</button></form></div>
+
+<div class="card"><h2>Pipeline</h2><form method="post" action="{{ url_for('account_update', aid=a.id) }}">
+<label>Status</label><select name="status">{% for s in statuses %}<option {{ 'selected' if s==a.status }}>{{ s }}</option>{% endfor %}</select>
+<label>Angle</label><select name="angle">{% for x in ['A','B','C'] %}<option {{ 'selected' if x==a.angle }}>{{ x }}</option>{% endfor %}</select>
+<label>Website</label><input name="website" value="{{ a.website or '' }}"><label>Notes</label><textarea name="notes">{{ a.notes or '' }}</textarea><button>Save</button></form></div>
+
+<div class="card"><h2>Log a touch</h2><form method="post" action="{{ url_for('account_touch', aid=a.id) }}">
+<label>Channel</label><select name="channel"><option>phone</option><option>email</option><option>in person</option><option>mail</option></select>
+<label>Outcome</label><select name="outcome">{% for o in ['no reply','replied','meeting booked','pilot agreed','call back later','not interested','unsubscribe'] %}<option>{{ o }}</option>{% endfor %}</select>
+<label>Notes</label><input name="notes"><button>Log</button></form>
+<table>{% for t in touches %}<tr><td class="small">{{ t.happened_at }}</td><td class="small">{{ t.channel }}</td><td class="small">{{ t.outcome }}<div class="muted">{{ t.notes or '' }}</div></td></tr>{% endfor %}</table></div>
+</div></div>{% endblock %}
