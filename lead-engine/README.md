@@ -11,6 +11,10 @@ Phase 0 data ──► import ──► Accounts (businesses)  ─┐
 
 ## Quick start
 
+**Easiest:** install Python 3 from python.org, then double-click `Start Lead Engine (Windows).bat` or `Start Lead Engine (Mac).command` (on a Mac, right-click → Open the first time). The first run installs what's needed, then your browser opens the dashboard.
+
+**Manual:**
+
 ```bash
 cd lead-engine
 pip install -r requirements.txt

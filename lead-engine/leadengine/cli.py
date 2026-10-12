@@ -6,7 +6,7 @@
   abr [--all]          ABN Lookup registered names (needs abr_guid in Settings)
   summarize [--all]    build public-knowledge summaries (Claude if configured)
   hooks                write personalised opening lines for researched accounts
-  serve [--port N]     run the dashboard on http://127.0.0.1:5050
+  serve [--port N] [--open]  run the dashboard on http://127.0.0.1:5050
 """
 import argparse
 import time
@@ -28,10 +28,17 @@ def main() -> None:
     ap.add_argument("command", choices=["init", "import", "enrich-web", "abr", "summarize", "hooks", "serve"])
     ap.add_argument("--all", action="store_true", help="include every business account, not just researched")
     ap.add_argument("--port", type=int, default=5050)
+    ap.add_argument("--open", action="store_true", help="open the dashboard in your browser")
     args = ap.parse_args()
 
     if args.command == "serve":
         from .app import create_app
+        url = f"http://127.0.0.1:{args.port}"
+        if args.open:
+            import threading
+            import webbrowser
+            threading.Timer(1.5, lambda: webbrowser.open(url)).start()
+        print(f"Lead Engine running at {url}  (close this window to stop it)")
         create_app().run(host="127.0.0.1", port=args.port, debug=False)
         return
 
